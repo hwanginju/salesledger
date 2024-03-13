@@ -52,6 +52,7 @@ public class SalesledgerApplication {
 		return runner -> {
 			startTime = System.currentTimeMillis();
 			
+			
 			System.out.println("=======================================================================================================");
 			System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm:ss")) + " spring.main.banner-mode=" + springMainBannerMode);
 			System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm:ss")) + " logging.level.root=" + loggingLevelRoot);
