@@ -1,10 +1,12 @@
 package com.iyf.salesledger.common.lnterceptor;
 
 import java.util.Enumeration;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.MDC;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -41,23 +43,30 @@ public class CustomURLInterceptor implements HandlerInterceptor {
 			try {
 				HandlerMethod handlerMethod = (HandlerMethod) handler;
 				String className = handlerMethod.getBeanType().getName();
+				// 패키지 이름을 제외한 클래스 이름 추출
+				int lastIndex = className.lastIndexOf(".");
+				if (lastIndex != -1) {
+				    className = className.substring(lastIndex + 1);
+				}
 				String methodName = handlerMethod.getMethod().getName();
 				
 				requsetUrl = url + queryString;
 				requsetMethod = method;
+				
+				MDC.put("identifier", generateIdentifier());
+				
 				log.info(">>> Start CustomURLInterceptor.preHandle");
-				log.info(">>> handler ::: " + className + "." + methodName); 
+				log.info(">>> Controller ::: " + className + "." + methodName); 
 //				log.info("remote ip" + " ::: " + ip + " ::: " + "session" + " ::: " + session); 
-				log.info(">>> request ::: url ::: " + requsetUrl);
-				log.info(">>> request ::: method ::: " + requsetMethod);
+				log.info(">>> url ::: " + requsetUrl);
+				log.info(">>> method ::: " + requsetMethod);
 				
 				Enumeration<String> parameterNames = request.getParameterNames();
 				while (parameterNames.hasMoreElements()) {
 					String paramName = parameterNames.nextElement();
-					log.info(">>> request ::: param ::: " + paramName + " ::: " + request.getParameter(paramName));
+					log.info(">>> param ::: " + paramName + " ::: " + request.getParameter(paramName));
 				}
 				
-				log.info(">>> End CustomURLInterceptor.preHandle");
 			} catch (Exception e) {
 				log.info(">>> Exception ::: " + e.getMessage());
 				log.info(">>> error request ::: url ::: " + requsetUrl);
@@ -86,12 +95,17 @@ public class CustomURLInterceptor implements HandlerInterceptor {
 				
 				HandlerMethod handlerMethod = (HandlerMethod) handler;
 				String className = handlerMethod.getBeanType().getName();
+				// 패키지 이름을 제외한 클래스 이름 추출
+				int lastIndex = className.lastIndexOf(".");
+				if (lastIndex != -1) {
+				    className = className.substring(lastIndex + 1);
+				}
 				String methodName = handlerMethod.getMethod().getName();
 				
-				log.info("<<< Start CustomURLInterceptor.afterCompletion");
+				log.info("<<< Controller ::: " + className + "." + methodName);
 //				log.info("remote ip" + " ::: " + ip + " ::: " + "session" + " ::: " + session);
-				log.info("<<< request ::: url ::: " + requsetUrl);
-				log.info("<<< request ::: method ::: " + requsetMethod);
+				log.info("<<< url ::: " + requsetUrl);
+				log.info("<<< method ::: " + requsetMethod);
 				log.info("<<< execution time  ::: " + (endTime.get() - startTime.get()) + "ms");
 				
 				// ThreadLocal 변수 정리 ::: 메모리 누수를 방지
@@ -100,11 +114,18 @@ public class CustomURLInterceptor implements HandlerInterceptor {
 				
 				log.info("<<< End CustomURLInterceptor.afterCompletion");
 			} catch (Exception e) {
-				log.info(">>> Exception ::: " + e.getMessage());
-				log.info(">>> error request ::: url ::: " + requsetUrl);
+				log.info("<<< Exception ::: " + e.getMessage());
+				log.info("<<< error request ::: url ::: " + requsetUrl);
 			}
 		}
 	}
+	
+    private static String generateIdentifier() {
+    	
+    	UUID uuid = UUID.randomUUID();
+        String identifier = uuid.toString().replace("-", "").toUpperCase().substring(0, 4);
+        return identifier;
+    }
 
 
 }
