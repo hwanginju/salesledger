@@ -89,7 +89,6 @@
                         		<c:when test="${item.authority == 'IYCNC 관리자'}"><c:set var="isIycncAdmin" value="1" /></c:when>
                         		<c:when test="${item.authority == 'IBTS 관리자'}"><c:set var="isIbtsAdmin" value="1" /></c:when>
                         		<c:when test="${item.authority == 'IYS 관리자'}"><c:set var="isIysAdmin" value="1" /></c:when>
-                        		<c:when test="${item.authority == '권한 없음'}"><c:set var="hasNoAuthority" value="1" /></c:when>
                         	</c:choose>
                         </c:forEach>
                         
@@ -105,9 +104,6 @@
 						
 						    <input type="checkbox" class="btn-check" name="auth" id="auth4" value="IYS 관리자" <c:if test="${isIysAdmin == '1'}">checked</c:if>>
 						    <label class="btn btn-outline-secondary" for="auth4">IYS 관리자</label>
-						
-						    <input type="checkbox" class="btn-check" name="auth" id="auth5" value="권한 없음" <c:if test="${hasNoAuthority == '1'}">checked</c:if>>
-						    <label class="btn btn-outline-secondary" for="auth5">권한 없음</label>
 						</span>
                     </span>
 
@@ -143,25 +139,30 @@
 
             // 수정 버튼 클릭 시 이벤트
             $('#btnUpdate').click(function() {
-                const member = {
+            	const authList = [];
+                $("input[name=auth]:checked").each(function() {
+                	authList.push($(this).val());
+                });
+            	
+                const requestMap = {
              		username: $('#username').val(),
-             		auth: $('#auth').val(),
-             		enabled: $('#enabled').val()
+             		authList: authList,
+             		enabled: $('#enabled').val(),
                 };
                 
                 $.ajax({
                     type: 'PUT',
                     url: '${pageContext.request.contextPath}/admin/member.ajax/',
-                    data: JSON.stringify(member),
+                    data: JSON.stringify(requestMap),
                     contentType: 'application/json',
                     success: function() {
+                    	alert('회원 수정이 완료되었습니다.')
                         opener.parent.location.reload();
-                       	window.location.href = window.location.href; 
+                       	window.location.reload(); 
                         
                     },
                     error: function() {
-                        opener.parent.location.reload();
-                        window.close();
+                    	alert('내부 서버 오류')
                     }
                 })
             });

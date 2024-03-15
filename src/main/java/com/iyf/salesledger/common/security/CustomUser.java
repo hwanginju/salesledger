@@ -15,7 +15,14 @@ public class CustomUser extends User {
 				member.getPassword(),
 				member.getAuthorities()
 				          .stream()  
-				          .map(auth -> new SimpleGrantedAuthority(auth.getAuthority())) 
+				          .map(auth -> {
+				        	  String authority = auth.getAuthority();
+		                        if (authority != null) {
+		                            return new SimpleGrantedAuthority(authority);
+		                        } else {
+		                            return new SimpleGrantedAuthority("권한 없음");
+		                        }
+				          }) 
 				          .collect(Collectors.toList())  
 		);
 	}

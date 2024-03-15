@@ -22,7 +22,7 @@
 		select /* MemberDao.selectOne */
 			*
 		from t_member m
-		inner join t_member_authorities a
+		left join t_member_authorities a
 		on m.username = a.username
 		where m.username = #{username} 
 	</select>
@@ -41,62 +41,89 @@
 			enabled = #{enabled}
 		where username = #{username}
 	</update>
-	<!-- authority: 'ROLE_ADMIN', 'ROLE_IYCNC' ...  -->
+	<update id="updateMemberDetail">
+		update t_member set /* MemberDao.updateMemberDetail */
+			username = #{username}
+			<if test="name != null and name != ''">
+			, name = #{name} 
+			</if>
+			<if test="company != null and company != ''">
+			, company = #{company} 
+			</if>
+			<if test="enabled != null and enabled != ''">
+			, enabled = #{enabled} 
+			</if>
+		where username = #{username}
+	</update>
+	
+	<delete id="deleteMemberAuthority">
+		/* MemberDao.deleteMemberAuthority */
+		delete from t_member_authorities where username = #{username} and authority != '권한 없음'
+	</delete>
+	
+	<insert id="insertMemberAuthority">
+		/* MemberDao.insertMemberAuthority */
+		insert into t_member_authorities (username, authority) values (#{username}, #{authority})
+	</insert>
+	
 	<insert id="insertAuthority">
 		/* MemberDao.insertAuthority */
 		insert into t_member_authorities (username, authority) values (#{username}, #{authority})
 	</insert>
 	
-	<update id="updateAuthority">
-		update t_member_authorities set /* MemberDao.updateAuthority */
-			username = #{username},
-			authority = #{authority}
-		where username = #{username}
-	</update>
 	
 	<select id="selectTotalCount" resultType="long">
 		select count(*) /* MemberDao.selectTotalCount */
-		from t_member m 
-		inner join t_member_authorities a 
-		on m.username = a.username
+		from t_member 
 		<choose>
-			<when test="scope == 'I'.toString()">where m.username LIKE '%'||#{keyword}||'%'</when>
-			<when test="scope == 'N'.toString()">where m.name LIKE '%'||#{keyword}||'%'</when>
-			<when test="scope == 'C'.toString()">where m.company LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'I'.toString()">where username LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'N'.toString()">where name LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'C'.toString()">where company LIKE '%'||#{keyword}||'%'</when>
 			<when test="scope == 'E'.toString()">
 				<choose>
 					<when test="keyword == '승인완료'.toString()">
-						where m.enabled = '1'
+						where enabled = '1'
 					</when>
 					<when test="keyword == '미승인'.toString()">
-						where m.enabled = '0'
+						where enabled = '0'
 					</when>
 				</choose>
 			</when>
 		</choose>
 	</select>
 	
-	<select id="selectMemberListPagingByKeyword" resultMap="memberMap">
-		select * /* MemberDao.selectMemberListPagingByKeyword */
-		from t_member m 
-		inner join t_member_authorities a 
-		on m.username = a.username
+	<select id="selectMemberListPagingByKeyword" resultType="CustomMap">
+		select /* MemberDao.selectMemberListPagingByKeyword */
+			username,
+			name,
+			company,
+			enabled,
+			(
+				select
+					STRING_AGG(authority, ', ')
+				from
+					t_member_authorities
+				where
+					t_member_authorities.username = t_member.username
+					and authority != '권한 없음'
+			) authorities
+		from t_member 
 		<choose>
-			<when test="scope == 'I'.toString()">where m.username LIKE '%'||#{keyword}||'%'</when>
-			<when test="scope == 'N'.toString()">where m.name LIKE '%'||#{keyword}||'%'</when>
-			<when test="scope == 'C'.toString()">where m.company LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'I'.toString()">where username LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'N'.toString()">where name LIKE '%'||#{keyword}||'%'</when>
+			<when test="scope == 'C'.toString()">where company LIKE '%'||#{keyword}||'%'</when>
 			<when test="scope == 'E'.toString()">
 				<choose>
 					<when test="keyword == '승인완료'.toString()">
-						where m.enabled = '1'
+						where enabled = '1'
 					</when>
 					<when test="keyword == '미승인'.toString()">
-						where m.enabled = '0'
+						where enabled = '0'
 					</when>
 				</choose>
 			</when>
 		</choose>
-		order by m.username
+		order by username
 		offset (#{pageNum}-1) * #{rowAmountPerPage}   
 		limit #{rowAmountPerPage}	 
 	</select>

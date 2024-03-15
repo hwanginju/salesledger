@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.iyf.salesledger.common.model.CustomMap;
 import com.iyf.salesledger.common.paging.PagingDTO;
 import com.iyf.salesledger.common.security.Member;
 import com.iyf.salesledger.common.security.MemberAuthority;
@@ -35,7 +36,7 @@ public class MemberService {
 		memberDao.insertAuthority(memberAuthority);
 	}
 
-	public List<Member> selectMemberListPagingByKeyword(PagingDTO pagingDTO) {
+	public List<CustomMap> selectMemberListPagingByKeyword(PagingDTO pagingDTO) {
 		return memberDao.selectMemberListPagingByKeyword(pagingDTO);
 	}
 
@@ -44,9 +45,17 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void update(Member member, MemberAuthority memberAuthority) {
-		memberDao.updateMember(member);
-		memberDao.updateAuthority(memberAuthority);
+	public void update(CustomMap paramMap) {
+		memberDao.updateMemberDetail(paramMap);
+		
+		memberDao.deleteMemberAuthority(paramMap);
+		List<String> authList = (List<String>) paramMap.getList("authList");
+		for (String auth : authList) {
+			CustomMap authMap = new CustomMap();
+			authMap.put("username", paramMap.getString("username"));
+			authMap.put("authority", auth);
+			memberDao.insertMemberAuthority(authMap);
+		}
 	}
 
 	@Transactional

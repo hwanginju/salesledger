@@ -63,7 +63,11 @@
 					 	sessionStorage.setItem('cachedMember', JSON.stringify(member));
 					 	
 						$('#name').text(member.name);
-						$('#auth').text(member.authorities[0].authority);
+						
+						const authorities = member.authorities.map(function(item) {
+						    return item.authority;
+						});
+						$('#auth').text(authorities.join(', '));
 						$('#company').text(member.company);
 					}
 				});

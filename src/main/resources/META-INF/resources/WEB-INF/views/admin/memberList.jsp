@@ -78,6 +78,14 @@
 							<input type="text" name="keyword" id="keyword" placeholder="키워드 입력">
 							<button type="button" id="btnKeywordSearch">검색</button>
 							<table class="table mt-3">
+								<colgroup>
+									<col style="width: 5%;"/>
+									<col style="width: 15%;"/>
+									<col style="width: 15%;"/>
+									<col style="width: 15%;"/>
+									<col style="width: auto%;"/>
+									<col style="width: 15%;"/>
+								</colgroup>
 								<thead>
 									<tr>
 										<th scope="col">#</th>
@@ -106,23 +114,7 @@
 												<c:out value="${member.company}" />
 											</td>
 											<td class="auth">
-												<c:choose>
-													<c:when test="${member.authorities[0].authority  == '통합 관리자'}">
-														통합 관리자
-													</c:when>
-													<c:when test="${member.authorities[0].authority  == 'IYCNC 관리자'}">
-														IYCNC 관리자
-													</c:when>
-													<c:when test="${member.authorities[0].authority  == 'IBTS 관리자'}">
-														IBTS 관리자
-													</c:when>
-													<c:when test="${member.authorities[0].authority  == 'IYS 관리자'}">
-														IYS 관리자
-													</c:when>
-													<c:otherwise>
-														권한 없음
-													</c:otherwise>
-												</c:choose>
+												<c:out value="${member.authorities}" />
 											</td>
 											<td class="enabled">
 												<c:choose>
@@ -255,7 +247,8 @@
 			
 			
 			$("#memberTbody tr").hover(function() {
-				$(this).css({ "background-color": "lightgray", "text-decoration": "underline" })
+				$(this).find('.username').css({ "text-decoration": "underline" });
+				$(this).css({ "background-color": "lightgray" })
 					   .click(function() {
 							const popupUrl = '${pageContext.request.contextPath}/admin/memberDetail?username=' + $(this).children(".username").text();
 							const popupName = 'empPoolDetail-popup';
@@ -268,7 +261,8 @@
 					
 					   })	
 			}, function() {
-				$(this).css({ "background-color": "", "text-decoration-line" : "none"  });
+				$(this).find('.username').css({ "text-decoration": "none" });
+				$(this).css({ "background-color": "" });
 			});
 
 
