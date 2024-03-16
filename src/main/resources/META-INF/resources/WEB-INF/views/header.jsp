@@ -64,7 +64,7 @@
 					 	
 						$('#name').text(member.name);
 						
-						const authorities = member.authorities.map(function(item) {
+						let authorities = member.authorities.map(function(item) {
 						    return item.authority;
 						});
 						$('#auth').text(authorities.join(', '));
@@ -73,7 +73,10 @@
 				});
 		    } else {
 				$('#name').text(cachedMember.name);
-				$('#auth').text(cachedMember.authorities[0].authority);
+				let authorities = cachedMember.authorities.map(function(item) {
+				    return item.authority;
+				});
+				$('#auth').text(authorities.join(', '));
 				$('#company').text(cachedMember.company);
 		    }
 		    
