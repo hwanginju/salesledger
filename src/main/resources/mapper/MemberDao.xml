@@ -138,4 +138,13 @@
 		/* MemberDao.deleteAuthority */
 		delete from t_member_authorities where username = #{username}
 	</delete>
+	
+	<update id="updateMemberPassword">
+		update t_member set /*MemberDao.updateMemberPassword*/
+			username = #{username}
+			<if test="password != null and password != ''">
+			, password = #{password}
+			</if>
+		where username = #{username}
+	</update>
 </mapper>

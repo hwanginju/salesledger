@@ -31,4 +31,6 @@ public interface MemberDao {
 	void deleteMember(String username);
 	
 	void deleteAuthority(String username);
+	
+	int updateMemberPassword(CustomMap paramMap);
 }
