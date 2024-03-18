@@ -63,13 +63,20 @@
 					 	sessionStorage.setItem('cachedMember', JSON.stringify(member));
 					 	
 						$('#name').text(member.name);
-						$('#auth').text(member.authorities[0].authority);
+						
+						let authorities = member.authorities.map(function(item) {
+						    return item.authority;
+						});
+						$('#auth').text(authorities.join(', '));
 						$('#company').text(member.company);
 					}
 				});
 		    } else {
 				$('#name').text(cachedMember.name);
-				$('#auth').text(cachedMember.authorities[0].authority);
+				let authorities = cachedMember.authorities.map(function(item) {
+				    return item.authority;
+				});
+				$('#auth').text(authorities.join(', '));
 				$('#company').text(cachedMember.company);
 		    }
 		    

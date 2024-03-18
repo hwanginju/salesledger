@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.iyf.salesledger.common.model.CustomMap;
 import com.iyf.salesledger.common.paging.PagingCreatorDTO;
 import com.iyf.salesledger.common.paging.PagingDTO;
 import com.iyf.salesledger.common.security.Member;
@@ -30,7 +31,7 @@ public class AdminPageController {
 		if (log.isInfoEnabled()) {log.info("Start AdminPageController.showMemberListPage");}
 		if (log.isInfoEnabled()) {log.info("param ::: pagingDTO ::: " + pagingDTO);}
 		if (log.isInfoEnabled()) {log.info("do service ::: memberService.selectMemberListPagingByKeyword");}
-		List<Member> memberList = memberService.selectMemberListPagingByKeyword(pagingDTO);
+		List<CustomMap> memberList = memberService.selectMemberListPagingByKeyword(pagingDTO);
 		if (log.isInfoEnabled()) {log.info("do service ::: memberService.selectTotalCount");}
 		long count = memberService.selectTotalCount(pagingDTO);
 		if (log.isInfoEnabled()) {log.info("build PagingCreatorDTO ::: field ::: rowAmountTotal ::: " + count);}

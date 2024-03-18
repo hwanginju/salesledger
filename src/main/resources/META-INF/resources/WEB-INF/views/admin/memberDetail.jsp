@@ -64,8 +64,9 @@
                     <label for="name">회사명:</label>
                     <input type="text" class="form-control" id="name" name="name" value="${member.company}" readonly>
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group mt-5 mb-5">
                     <span>
+                        <%--
                         <label for="auth">권한:</label>
                         <select id="auth" name="auth">
                         	
@@ -75,6 +76,35 @@
                             <option value="IYS 관리자" <c:if test="${member.authorities[0].authority == 'IYS 관리자'}">selected</c:if>>IYS 관리자</option>
                             <option value="권한 없음" <c:if test="${member.authorities[0].authority == '권한 없음'}">selected</c:if>>권한 없음</option>
                         </select>
+                         --%>
+                        <c:set var="isSystemAdmin" value="0" />
+                        <c:set var="isIycncAdmin" value="0" />
+                        <c:set var="isIbtsAdmin" value="0" />
+                        <c:set var="isIysAdmin" value="0" />
+                        <c:set var="hasNoAuthority" value="0" />
+                        
+                        <c:forEach var="item" items="${member.authorities}">
+                        	<c:choose>
+                        		<c:when test="${item.authority == '통합 관리자'}"><c:set var="isSystemAdmin" value="1" /></c:when>
+                        		<c:when test="${item.authority == 'IYCNC 관리자'}"><c:set var="isIycncAdmin" value="1" /></c:when>
+                        		<c:when test="${item.authority == 'IBTS 관리자'}"><c:set var="isIbtsAdmin" value="1" /></c:when>
+                        		<c:when test="${item.authority == 'IYS 관리자'}"><c:set var="isIysAdmin" value="1" /></c:when>
+                        	</c:choose>
+                        </c:forEach>
+                        
+                        <span class="btn-group btn-group-sm">
+						    <input type="checkbox" class="btn-check" name="auth" id="auth1" value="통합 관리자" <c:if test="${isSystemAdmin == '1'}">checked</c:if>>
+						    <label class="btn btn-outline-primary" for="auth1">통합 관리자</label>
+						
+						    <input type="checkbox" class="btn-check" name="auth" id="auth2" value="IYCNC 관리자" <c:if test="${isIycncAdmin == '1'}">checked</c:if>>
+						    <label class="btn btn-outline-secondary" for="auth2">IYCNC 관리자</label>
+						
+						    <input type="checkbox" class="btn-check" name="auth" id="auth3" value="IBTS 관리자" <c:if test="${isIbtsAdmin == '1'}">checked</c:if>>
+						    <label class="btn btn-outline-secondary" for="auth3">IBTS 관리자</label>
+						
+						    <input type="checkbox" class="btn-check" name="auth" id="auth4" value="IYS 관리자" <c:if test="${isIysAdmin == '1'}">checked</c:if>>
+						    <label class="btn btn-outline-secondary" for="auth4">IYS 관리자</label>
+						</span>
                     </span>
 
                     <span class="float-end">
@@ -109,25 +139,30 @@
 
             // 수정 버튼 클릭 시 이벤트
             $('#btnUpdate').click(function() {
-                const member = {
+            	const authList = [];
+                $("input[name=auth]:checked").each(function() {
+                	authList.push($(this).val());
+                });
+            	
+                const requestMap = {
              		username: $('#username').val(),
-             		auth: $('#auth').val(),
-             		enabled: $('#enabled').val()
+             		authList: authList,
+             		enabled: $('#enabled').val(),
                 };
                 
                 $.ajax({
                     type: 'PUT',
                     url: '${pageContext.request.contextPath}/admin/member.ajax/',
-                    data: JSON.stringify(member),
+                    data: JSON.stringify(requestMap),
                     contentType: 'application/json',
                     success: function() {
+                    	alert('회원 수정이 완료되었습니다.')
                         opener.parent.location.reload();
-                       	window.location.href = window.location.href; 
+                       	window.location.reload(); 
                         
                     },
                     error: function() {
-                        opener.parent.location.reload();
-                        window.close();
+                    	alert('내부 서버 오류')
                     }
                 })
             });

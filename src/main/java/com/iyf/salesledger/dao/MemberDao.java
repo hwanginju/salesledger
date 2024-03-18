@@ -2,6 +2,7 @@ package com.iyf.salesledger.dao;
 
 import java.util.List;
 
+import com.iyf.salesledger.common.model.CustomMap;
 import com.iyf.salesledger.common.paging.PagingDTO;
 import com.iyf.salesledger.common.security.Member;
 import com.iyf.salesledger.common.security.MemberAuthority;
@@ -13,11 +14,17 @@ public interface MemberDao {
 	
 	void insertAuthority(MemberAuthority memberAuthority);
 	
-	List<Member> selectMemberListPagingByKeyword(PagingDTO pagingDTO);
+	List<CustomMap> selectMemberListPagingByKeyword(PagingDTO pagingDTO);
 	
 	long selectTotalCount(PagingDTO pagingDTO);
 	
 	void updateMember(Member member);
+	
+	int updateMemberDetail(CustomMap paramMap);
+	
+	int deleteMemberAuthority(CustomMap paramMap);
+	
+	int insertMemberAuthority(CustomMap paramMap);
 	
 	void updateAuthority(MemberAuthority authority); 
 	
