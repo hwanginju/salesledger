@@ -64,9 +64,10 @@
 					 	
 						$('#name').text(member.name);
 						
-						let authorities = member.authorities.map(function(item) {
-						    return item.authority;
+						const authorities = member.authorities.map(function(item){
+							return item.authority;
 						});
+						
 						$('#auth').text(authorities.join(', '));
 						$('#company').text(member.company);
 					}

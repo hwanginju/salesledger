@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iyf.salesledger.common.model.CustomMap;
+import com.iyf.salesledger.common.security.Member;
+import com.iyf.salesledger.common.security.MemberAuthority;
 import com.iyf.salesledger.service.MemberService;
 
 import lombok.extern.log4j.Log4j2;

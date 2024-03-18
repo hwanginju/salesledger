@@ -41,40 +41,42 @@
 			enabled = #{enabled}
 		where username = #{username}
 	</update>
+	
 	<update id="updateMemberDetail">
-		update t_member set /* MemberDao.updateMemberDetail */
+		update t_member set /*MemberDao.updateMemberDetail*/
 			username = #{username}
 			<if test="name != null and name != ''">
-			, name = #{name} 
+			,name = #{name}
 			</if>
 			<if test="company != null and company != ''">
-			, company = #{company} 
+			,company = #{company}
 			</if>
 			<if test="enabled != null and enabled != ''">
-			, enabled = #{enabled} 
+			,enabled = #{enabled}
 			</if>
 		where username = #{username}
 	</update>
 	
 	<delete id="deleteMemberAuthority">
-		/* MemberDao.deleteMemberAuthority */
+		/*MemberDao.deleteMemberAuthirity*/
 		delete from t_member_authorities where username = #{username} and authority != '권한 없음'
 	</delete>
 	
 	<insert id="insertMemberAuthority">
-		/* MemberDao.insertMemberAuthority */
+		/*MemberDao.insertMemberAuthority*/
 		insert into t_member_authorities (username, authority) values (#{username}, #{authority})
 	</insert>
 	
+	<!-- authority: 'ROLE_ADMIN', 'ROLE_IYCNC' ...  -->
 	<insert id="insertAuthority">
 		/* MemberDao.insertAuthority */
-		insert into t_member_authorities (username, authority) values (#{username}, #{authority})
+		 insert into t_member_authorities (username, authority) values (#{username}, #{authority}) 
 	</insert>
 	
 	
 	<select id="selectTotalCount" resultType="long">
 		select count(*) /* MemberDao.selectTotalCount */
-		from t_member 
+		from t_member
 		<choose>
 			<when test="scope == 'I'.toString()">where username LIKE '%'||#{keyword}||'%'</when>
 			<when test="scope == 'N'.toString()">where name LIKE '%'||#{keyword}||'%'</when>
@@ -92,7 +94,7 @@
 		</choose>
 	</select>
 	
-	<select id="selectMemberListPagingByKeyword" resultType="CustomMap">
+	<select id="selectMemberListPagingByKeyword" resultMap="CustomMap">
 		select /* MemberDao.selectMemberListPagingByKeyword */
 			username,
 			name,
@@ -106,8 +108,8 @@
 				where
 					t_member_authorities.username = t_member.username
 					and authority != '권한 없음'
-			) authorities
-		from t_member 
+			)authorities
+		from t_member
 		<choose>
 			<when test="scope == 'I'.toString()">where username LIKE '%'||#{keyword}||'%'</when>
 			<when test="scope == 'N'.toString()">where name LIKE '%'||#{keyword}||'%'</when>

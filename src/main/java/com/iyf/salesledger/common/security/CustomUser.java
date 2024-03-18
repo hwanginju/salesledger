@@ -17,12 +17,12 @@ public class CustomUser extends User {
 				          .stream()  
 				          .map(auth -> {
 				        	  String authority = auth.getAuthority();
-		                        if (authority != null) {
-		                            return new SimpleGrantedAuthority(authority);
-		                        } else {
-		                            return new SimpleGrantedAuthority("권한 없음");
-		                        }
-				          }) 
+				        	  if(authority != null) {
+				        		  return new SimpleGrantedAuthority(authority);
+				        	  } else {
+				        		  return new SimpleGrantedAuthority("권한 없음");
+				        	  }
+				          })
 				          .collect(Collectors.toList())  
 		);
 	}

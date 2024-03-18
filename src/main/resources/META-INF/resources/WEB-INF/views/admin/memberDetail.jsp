@@ -66,24 +66,13 @@
                 </div>
                 <div class="form-group mt-5 mb-5">
                     <span>
-                        <%--
-                        <label for="auth">권한:</label>
-                        <select id="auth" name="auth">
-                        	
-                            <option value="통합 관리자" <c:if test="${member.authorities[0].authority == '통합관리자'}">selected</c:if>>통합 관리자</option>
-                            <option value="IYCNC 관리자" <c:if test="${member.authorities[0].authority == 'IYCNC 관리자'}">selected</c:if>>IYCNC 관리자</option>
-                            <option value="IBTS 관리자" <c:if test="${member.authorities[0].authority == 'IBTS 관리자'}">selected</c:if>>IBTS 관리자</option>
-                            <option value="IYS 관리자" <c:if test="${member.authorities[0].authority == 'IYS 관리자'}">selected</c:if>>IYS 관리자</option>
-                            <option value="권한 없음" <c:if test="${member.authorities[0].authority == '권한 없음'}">selected</c:if>>권한 없음</option>
-                        </select>
-                         --%>
-                        <c:set var="isSystemAdmin" value="0" />
-                        <c:set var="isIycncAdmin" value="0" />
-                        <c:set var="isIbtsAdmin" value="0" />
-                        <c:set var="isIysAdmin" value="0" />
-                        <c:set var="hasNoAuthority" value="0" />
-                        
-                        <c:forEach var="item" items="${member.authorities}">
+                    	<c:set var="isSystemAdmin" value="0"/>
+                    	<c:set var="isIycncAdmin" value="0"/>
+                    	<c:set var="isIbtsAdmin" value="0"/>
+                    	<c:set var="isIysAdmin" value="0"/>
+                    	<c:set var="hasNoAuthority" value="0"/>
+                    	
+                    	<c:forEach var="item" items="${member.authorities}">
                         	<c:choose>
                         		<c:when test="${item.authority == '통합 관리자'}"><c:set var="isSystemAdmin" value="1" /></c:when>
                         		<c:when test="${item.authority == 'IYCNC 관리자'}"><c:set var="isIycncAdmin" value="1" /></c:when>
@@ -92,21 +81,21 @@
                         	</c:choose>
                         </c:forEach>
                         
-                        <span class="btn-group btn-group-sm">
+                         <span class="btn-group btn-group-sm">
 						    <input type="checkbox" class="btn-check" name="auth" id="auth1" value="통합 관리자" <c:if test="${isSystemAdmin == '1'}">checked</c:if>>
 						    <label class="btn btn-outline-primary" for="auth1">통합 관리자</label>
-						
-						    <input type="checkbox" class="btn-check" name="auth" id="auth2" value="IYCNC 관리자" <c:if test="${isIycncAdmin == '1'}">checked</c:if>>
-						    <label class="btn btn-outline-secondary" for="auth2">IYCNC 관리자</label>
-						
-						    <input type="checkbox" class="btn-check" name="auth" id="auth3" value="IBTS 관리자" <c:if test="${isIbtsAdmin == '1'}">checked</c:if>>
-						    <label class="btn btn-outline-secondary" for="auth3">IBTS 관리자</label>
-						
-						    <input type="checkbox" class="btn-check" name="auth" id="auth4" value="IYS 관리자" <c:if test="${isIysAdmin == '1'}">checked</c:if>>
-						    <label class="btn btn-outline-secondary" for="auth4">IYS 관리자</label>
-						</span>
+							
+							<input type="checkbox" class="btn-check" name="auth" id="auth2" value="IYCNC 관리자" <c:if test="${isIycncAdmin == '1'}">checked</c:if>>
+							<label class="btn btn-outline-primary" for="auth2">IYCNC 관리자</label>
+							
+							<input type="checkbox" class="btn-check" name="auth" id="auth3" value="IBTS 관리자" <c:if test="${isIbtsAdmin == '1'}">checked</c:if>>
+							<label class="btn btn-outline-primary" for="auth3">IBTS 관리자</label>
+							
+							<input type="checkbox" class="btn-check" name="auth" id="auth4" value="IYS 관리자" <c:if test="${isIysAdmin == '1'}">checked</c:if>>
+							<label class="btn btn-outline-primary" for="auth4">IYS 관리자</label>
+						 </span>
                     </span>
-
+	
                     <span class="float-end">
                         <label for="enabled">가입승인:</label>
                         <select name="enabled" id="enabled">
@@ -135,34 +124,34 @@
 
     <script>
         $(document).ready(function () {
-
-
+        	
+        	
             // 수정 버튼 클릭 시 이벤트
             $('#btnUpdate').click(function() {
-            	const authList = [];
-                $("input[name=auth]:checked").each(function() {
-                	authList.push($(this).val());
-                });
-            	
-                const requestMap = {
+                const authList = []; //권한 배열 초기화
+                	$("input[name=auth]:cheked").each(function(){
+                		authList.push($(this.val()); //선택한 권한만 추가
+                	});
+                		
+                const requestMap = { //해당 데이터를 requestMap에 추가
              		username: $('#username').val(),
              		authList: authList,
-             		enabled: $('#enabled').val(),
+             		enabled: $('#enabled').val()
                 };
                 
                 $.ajax({
                     type: 'PUT',
                     url: '${pageContext.request.contextPath}/admin/member.ajax/',
-                    data: JSON.stringify(requestMap),
+                    data: JSON.stringify(requestMap), //요청 데이터를 JSON 문자열로 변환
                     contentType: 'application/json',
                     success: function() {
                     	alert('회원 수정이 완료되었습니다.')
                         opener.parent.location.reload();
-                       	window.location.reload(); 
+                       	window.location.reload();
                         
                     },
                     error: function() {
-                    	alert('내부 서버 오류')
+                        alert('내부 서버 오류')
                     }
                 })
             });

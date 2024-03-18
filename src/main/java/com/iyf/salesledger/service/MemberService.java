@@ -46,16 +46,16 @@ public class MemberService {
 
 	@Transactional
 	public void update(CustomMap paramMap) {
-		memberDao.updateMemberDetail(paramMap);
-		
-		memberDao.deleteMemberAuthority(paramMap);
-		List<String> authList = (List<String>) paramMap.getList("authList");
-		for (String auth : authList) {
-			CustomMap authMap = new CustomMap();
-			authMap.put("username", paramMap.getString("username"));
-			authMap.put("authority", auth);
-			memberDao.insertMemberAuthority(authMap);
-		}
+			memberDao.updateMemberDetail(paramMap);
+			
+			memberDao.deleteMemberAuthority(paramMap);
+			List<String> authList = (List<String>) paramMap.getList("authList");
+			for (String auth : authList) {
+				CustomMap authMap = new CustomMap();
+				authMap.put("username", paramMap.getString("username"));
+				authMap.put("authority" ,auth);
+				memberDao.insertMemberAuthority(authMap);
+			}
 	}
 
 	@Transactional

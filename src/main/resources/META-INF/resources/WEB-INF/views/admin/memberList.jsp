@@ -247,7 +247,7 @@
 			
 			
 			$("#memberTbody tr").hover(function() {
-				$(this).find('.username').css({ "text-decoration": "underline" });
+				$(this).find('.username').css({"text-decoration": "underline"});
 				$(this).css({ "background-color": "lightgray" })
 					   .click(function() {
 							const popupUrl = '${pageContext.request.contextPath}/admin/memberDetail?username=' + $(this).children(".username").text();
