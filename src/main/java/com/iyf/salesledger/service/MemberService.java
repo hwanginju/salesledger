@@ -13,7 +13,9 @@ import com.iyf.salesledger.common.security.Member;
 import com.iyf.salesledger.common.security.MemberAuthority;
 import com.iyf.salesledger.dao.MemberDao;
 
-@Service
+import lombok.extern.log4j.Log4j2;
+
+@Service @Log4j2
 public class MemberService {
 
 	@Autowired
@@ -64,6 +66,15 @@ public class MemberService {
 		memberDao.deleteMember(username);
 	}	
 	
+	public void updateMemberPassword(CustomMap paramMap) {
+		if (log.isInfoEnabled()) { log.info("paramMap ::: " + paramMap); }
+		String encodedPassword = passwordEncoder.encode(paramMap.getString("password"));
+		if (log.isInfoEnabled()) { log.info("encodedPassword ::: " + encodedPassword); }
+		CustomMap memberMap = new CustomMap();
+		memberMap.put("username", paramMap.getString("username"));
+		memberMap.put("password", encodedPassword);
+		memberDao.updateMemberPassword(memberMap);
+	}
 	
 
 }

@@ -58,12 +58,20 @@
                 </div>
                 <div class="form-group mb-3">
                     <label for="name">이름:</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${member.name}" readonly>
+                    <input type="text" class="form-control" id="name" name="name" value="${member.name}">
                 </div>
                 <div class="form-group mb-3">
                     <label for="name">회사명:</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${member.company}" readonly>
+                    <input type="text" class="form-control" id="company" name="company" value="${member.company}">
                 </div>
+                <div class="row mt-2" id="row-change-password" >
+                	<div class="col-4">
+                	</div>
+					<div class="col-8 text-end" style="display: ;">
+						<input type="password" id="password" placeholder="비밀번호">
+						<button type="button" id="btnChangePassword">변경</button>
+					</div>
+				</div>
                 <div class="form-group mt-5 mb-5">
                     <span>
                     	<c:set var="isSystemAdmin" value="0"/>
@@ -129,12 +137,14 @@
             // 수정 버튼 클릭 시 이벤트
             $('#btnUpdate').click(function() {
                 const authList = []; //권한 배열 초기화
-                	$("input[name=auth]:cheked").each(function(){
-                		authList.push($(this.val()); //선택한 권한만 추가
+                	$("input[name=auth]:checked").each(function(){
+                		authList.push($(this).val()); //선택한 권한만 추가
                 	});
                 		
                 const requestMap = { //해당 데이터를 requestMap에 추가
              		username: $('#username').val(),
+             		name: $('#name').val(),
+             		company: $('#company').val(),
              		authList: authList,
              		enabled: $('#enabled').val()
                 };
@@ -142,7 +152,7 @@
                 $.ajax({
                     type: 'PUT',
                     url: '${pageContext.request.contextPath}/admin/member.ajax/',
-                    data: JSON.stringify(requestMap), //요청 데이터를 JSON 문자열로 변환
+                    data: JSON.stringify(requestMap),
                     contentType: 'application/json',
                     success: function() {
                     	alert('회원 수정이 완료되었습니다.')
@@ -178,6 +188,38 @@
                 }
                     
             })
+            
+            // 회원 비밀번호 변경
+            $('#btnChangePassword').click(function() {
+            	if (!$('#password').val()) {
+            		alert('변경할 비밀번호를 입력해주세요.');
+            		return;
+            	}
+            	if (!confirm('해당 회원의 비밀번호를 변경하시겠습니까?')) {
+                    return;
+                } else {
+
+                	const requestMap = {
+              			username: $('#username').val(),
+              			password: $('#password').val(),
+                	};
+                	
+                	$.ajax({
+                        type: 'POST',
+                        url: '${pageContext.request.contextPath}/admin/member.ajax/changePassword/',
+                        data: JSON.stringify(requestMap),
+                        contentType: 'application/json',
+                        success: function () {
+                        	alert('비밀번호 변경이 완료되었습니다.')
+                            opener.parent.location.reload();
+                           	window.location.reload();
+                        },
+                        error: function () {
+                        	alert('내부 서버 오류')
+                        }
+                    });
+                }
+            });
             
 
         });
