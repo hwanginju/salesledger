@@ -30,7 +30,7 @@
 	<insert id="insertMember">
 		/* MemberDao.insertMember */
 		insert into t_member (username, password, name, company, enabled) 
-		values (#{username}, #{password}, #{name}, #{company}, '0');	
+		values (#{username}, #{password}, #{name}, #{company}, '0')
 	</insert>
 	<update id="updateMember">
 		update t_member set /* MemberDao.updateMember */
@@ -94,7 +94,7 @@
 		</choose>
 	</select>
 	
-	<select id="selectMemberListPagingByKeyword" resultMap="CustomMap">
+	<select id="selectMemberListPagingByKeyword" resultType="CustomMap">
 		select /* MemberDao.selectMemberListPagingByKeyword */
 			username,
 			name,
@@ -138,4 +138,13 @@
 		/* MemberDao.deleteAuthority */
 		delete from t_member_authorities where username = #{username}
 	</delete>
+	
+	<update id="updateMemberPassword">
+		update t_member set /*MemberDao.updateMemberPassword*/
+			username = #{username}
+			<if test="password != null and password != ''">
+			, password = #{password}
+			</if>
+		where username = #{username}
+	</update>
 </mapper>
